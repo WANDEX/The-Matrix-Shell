@@ -140,13 +140,11 @@ main() {
         cols[random_col]=0;
 
         for (col in cols) {
-            rnum = int(20*rand());
+            rnum = int(30*rand());
             if (cols[col] < 0) {
                 line=-cols[col];
                 cols[col]=cols[col]-1;
-                subline = -cols[col] + 1;
-                printf "\033[%s;%sH%s", line, col, " ";
-                printf "\033[%s;%sH%s\033[0;0H", newline, col, " ";
+                printf "\033[%s;%sH%s\033[0;0H", line, col, " ";
                 if (actcol >= lines) {
                     cols[col]=0;
                 } else if (rnum < 1) {
@@ -158,9 +156,9 @@ main() {
                 if (rnum < 3) {
                     printf "\033[%s;%sH\033[0;32m%s\033[0m", line, col, letter;
                 } else {
+                    printf "\033[%s;%sH\033[0;97m%s\033[0m", line+1, col, letter;
                     printf "\033[%s;%sH\033[2;32m%s\033[0m", line, col, letter;
                 }
-                #printf "\033[%s;%sH\033[2;32m%s\033[0;0H\033[0m", cols[col], col, letter;
                 printf "\033[%s;%sH\033[%s;32m%s\033[0;0H\033[0m", cent_v, cent_h, message_int, message;
                 if (cols[col] >= lines) {
                     if (rnum < 2) {
