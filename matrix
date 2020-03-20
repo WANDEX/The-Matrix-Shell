@@ -25,7 +25,7 @@ usage() {
     printf "\t-i, --message_int\tProvide an integer from 0-9 that modifies the message\n"
     printf "\t-k, --halfwidth\t\tUse half-width characters of Japanese katakana\n\t\t\t\t\t\t[$KATAKANA_H_G]\n"
     printf "\t-K, --fullwidth\t\tUse full-width Japanese katakana characters.\n"
-    printf "\t\t\t\t\t\tWill not work with fixed-width terminals!\t\n[$KATAKANA_F_G]\n"
+    printf "\t\t\t\t\t\tWill not work with fixed-width terminals!\n[$KATAKANA_F_G]\n"
     printf "EXAMPLES\n"
     printf "\t$(basename $BASH_SOURCE) -du\n"
     printf "\t$(basename $BASH_SOURCE) -bi 5 -m 'TEST MESSAGE'\n"
