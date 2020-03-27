@@ -127,8 +127,8 @@ get_chars() {
 main() {
     lines=$(tput lines)
     cols=$(tput cols)
-    message_len="$((${#message} - 2))"
-    cent_v=$((lines / 2)) # find vertical center
+    message_len="$((${#message} - 3))"
+    cent_v=$(((lines / 2) + (1))) # find vertical center
     cent_h=$(((cols / 2) - (message_len / 2))) # find horizontal center
 
     awkscript='
