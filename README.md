@@ -9,11 +9,11 @@ The Matrix (1999) screen rain effect of falling green characters in a shell/term
 Usage: matrix [OPTION...]
 OPTIONS
     -h, --help          Display help
-    -b, --binary        Use binary characters   [01]
-    -d, --digits        Use digit characters    [0123456789]
-    -l, --lower         Use lower case letters  [abcdefghijklmnopqrstuvwxyz]
-    -u, --upper         Use upper case letters  [ABCDEFGHIJKLMNOPQRSTUVWXYZ]
-    -s, --special       Use special characters  [()[]{}/\]
+    -b, --binary        Use binary characters  [01]
+    -d, --digits        Use digit characters   [0123456789]
+    -l, --lower         Use lower case letters [abcdefghijklmnopqrstuvwxyz]
+    -u, --upper         Use upper case letters [ABCDEFGHIJKLMNOPQRSTUVWXYZ]
+    -s, --special       Use special characters [()[]{}/\]
     -t, --testing       Activate character testing mode
     -c, --custom        Use custom characters specified 'inside single quotes'
     -m, --message       Provide a message to display in the center
