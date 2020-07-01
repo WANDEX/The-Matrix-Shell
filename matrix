@@ -9,31 +9,30 @@ SPECIAL_G='()[]{}/\\'
 KATAKANA_H_G='ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ'
 KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ'
 
-usage() {
-    # Help message
-    printf "Usage: $(basename $BASH_SOURCE) [OPTION...]\n"
-    printf "OPTIONS\n"
-    printf "\t-h, --help \t\t\tDisplay help\n"
-    printf "\t-b, --binary \t\tUse binary characters \t[$BINARY_G]\n"
-    printf "\t-d, --digits \t\tUse digit characters  \t[$DIGITS_G]\n"
-    printf "\t-l, --lower\t\t\tUse lower case letters\t[$LOWER_G]\n"
-    printf "\t-u, --upper\t\t\tUse upper case letters\t[$UPPER_G]\n"
-    printf "\t-s, --special\t\tUse special characters\t[$SPECIAL_G]\n"
-    printf "\t-t, --testing\t\tActivate character testing mode\n"
-    printf "\t-c, --custom \t\tUse custom characters specified \'inside single quotes\'\n"
-    printf "\t-m, --message\t\tProvide a message to display in the center\n"
-    printf "\t-i, --message_int\tProvide an integer from 0-9 that modifies the message\n"
-    printf "\t-k, --halfwidth\t\tUse half-width characters of Japanese katakana\n\t\t\t\t\t\t[$KATAKANA_H_G]\n"
-    printf "\t-K, --fullwidth\t\tUse full-width Japanese katakana characters.\n"
-    printf "\t\t\t\t\t\tWill not work with fixed-width terminals!\n[$KATAKANA_F_G]\n"
-    printf "EXAMPLES\n"
-    printf "\t$(basename $BASH_SOURCE) -du\n"
-    printf "\t$(basename $BASH_SOURCE) -bi 5 -m 'TEST MESSAGE'\n"
-    printf "\t$(basename $BASH_SOURCE) -b --custom='"
-    printf '!?/\\\'
-    printf "' --testing\n"
-    exit 0
-}
+# read into variable using 'Here Document' code block
+read -d '' USAGE <<- EOF
+Usage: $(basename $BASH_SOURCE) [OPTION...]
+OPTIONS
+    -h, --help          Display help
+    -b, --binary        Use binary characters  [$BINARY_G]
+    -d, --digits        Use digit characters   [$DIGITS_G]
+    -l, --lower         Use lower case letters [$LOWER_G]
+    -u, --upper         Use upper case letters [$UPPER_G]
+    -s, --special       Use special characters [$SPECIAL_G]
+    -t, --testing       Activate character testing mode
+    -c, --custom        Use custom characters specified 'inside single quotes'
+    -m, --message       Provide a message to display in the center
+    -i, --message_int   Provide an integer from 0-9 that modifies the message
+    -k, --halfwidth     Use half-width characters of Japanese katakana
+                        [$KATAKANA_H_G]
+    -K, --fullwidth     Use full-width Japanese katakana characters.
+                        Will not work with fixed-width terminals!
+[$KATAKANA_F_G]
+EXAMPLES
+    $(basename $BASH_SOURCE) -du
+    $(basename $BASH_SOURCE) -bi 5 -m 'TEST MESSAGE'
+    $(basename $BASH_SOURCE) -b --custom='!?/\\\\\\\\' --testing
+EOF
 
 input_validation() {
     # show usage if command not supplied
@@ -41,10 +40,12 @@ input_validation() {
         printf "Failed to parse options. Exiting...\n"
         exit 1
     elif [[ -z "$1" ]]; then
-        usage
+        echo "$USAGE"
+        exit 0
     elif [[ "$1" != -* || "$1" == - ]]; then
         printf "Options should start with '-'.\n"
-        usage
+        echo "$USAGE"
+        exit 0
     fi
 }
 
@@ -71,7 +72,8 @@ get_opt() {
             digits_v="$DIGITS_G"
             ;;
         -h|--help)
-            usage
+            echo "$USAGE"
+            exit 0
             ;;
         -i|--message_int)
             shift
