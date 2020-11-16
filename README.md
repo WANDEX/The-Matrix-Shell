@@ -32,7 +32,7 @@ EXAMPLES
 ## Spawn full screen terminal and execute matrix shell
 ```bash
 # example for st terminal emulator
-st -f "NotoSansMono Nerd Font:pixelsize=27" -n opaque -t The-Matrix-Shell -e matrix -kd
+st -f "NotoSansMono Nerd Font:pixelsize=27" -n opaque -t The-Matrix-Shell -e matrix -du
 
 # define rule in i3/config
 for_window [title="The-Matrix-Shell"] fullscreen
