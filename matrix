@@ -1,17 +1,19 @@
 #!/bin/sh
-# "The Matrix" effect
+# The Matrix (1999) screen rain effect
 
 BINARY_G='01'
 DIGITS_G='0123456789'
 LOWER_G='abcdefghijklmnopqrstuvwxyz'
 UPPER_G='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-SPECIAL_G='()[]{}/\\'
+rs="\\\\" # written this way to fix 'shellcheck SC1003'
+SPECIAL_G='()[]{}/'"$rs"
 KATAKANA_H_G='ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ'
 KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ'
 
 # read into variable using 'Here Document' code block
-read -d '' USAGE <<- EOF
-Usage: $(basename $BASH_SOURCE) [OPTION...]
+# -d introduces 'SC3045', but other approaches to write USAGE - are pretty ugly.
+read -r -d '' USAGE <<- EOF
+Usage: $(basename "$0") [OPTION...]
 OPTIONS
     -h, --help          Display help
     -b, --binary        Use binary characters  [$BINARY_G]
@@ -29,24 +31,29 @@ OPTIONS
                         Will not work with fixed-width terminals!
 [$KATAKANA_F_G]
 EXAMPLES
-    $(basename $BASH_SOURCE) -du
-    $(basename $BASH_SOURCE) -bi 5 -m 'TEST MESSAGE'
-    $(basename $BASH_SOURCE) -b --custom='!?/\\\\\\\\' --testing
+    $(basename "$0") -du
+    $(basename "$0") -bi 5 -m 'TEST MESSAGE'
+    $(basename "$0") -b --custom='!?/\\\' --testing
 EOF
 
 input_validation() {
-    # show usage if command not supplied
-    if [ $? != 0 ]; then
-        printf "Failed to parse options. Exiting...\n"
-        exit 1
-    elif [[ -z "$1" ]]; then
-        echo "$USAGE"
-        exit 0
-    elif [[ "$1" != -* || "$1" == - ]]; then
-        printf "Options should start with '-'.\n"
-        echo "$USAGE"
-        exit 0
-    fi
+    # show usage if option not supplied
+    err_txt="Provide option which should start with '-(option) or --(longoption)'."
+    case "$1" in
+        ''|--|-) # empty option
+            printf "%s\n" "$err_txt"
+            echo "$USAGE"
+            exit 1
+            ;;
+        --*|-*) # assume that such options are the right options
+            return
+            ;;
+        *)
+            printf "%s\n" "$err_txt"
+            echo "$USAGE"
+            exit 1
+            ;;
+    esac
 }
 
 get_opt() {
@@ -111,10 +118,10 @@ get_opt() {
 }
 
 testing_mode() {
-    if [[ $testing_f ]]; then
+    if [ "$testing_f" ]; then
         printf "Character Testing Mode.\n\n"
-        printf "characters:\t[$letters]\n"
-        printf "charlength:\t($letters_len) = characters length + 1\n"
+        printf "characters:\t[%s]\n" "$letters"
+        printf "charlength:\t(%s) = characters length + 1\n" "$letters_len"
         printf "exiting...\n"
         exit 0
     fi
@@ -126,13 +133,20 @@ get_chars() {
     testing_mode
 }
 
+calc_remainder() {
+    num="$1"
+    rnum=$(shuf -n 1 -i 1-"$cols")
+    out=$(echo "$rnum % $num" | bc)
+    echo "$out"
+}
+
 main() {
     lines=$(tput lines)
     cols=$(tput cols)
     message_len="$((${#message} - 3))"
     cent_v=$(((lines / 2) + (1))) # find vertical center
     cent_h=$(((cols / 2) - (message_len / 2))) # find horizontal center
-
+    # shellcheck disable=SC2016
     awkscript='
     {
         lines=$1;
@@ -140,7 +154,6 @@ main() {
         c=$4;
         letter=substr(letters,c,1);
         cols[random_col]=0;
-
         for (col in cols) {
             rnum = int(30*rand());
             if (cols[col] < 0) {
@@ -173,27 +186,28 @@ main() {
         }
     }
     '
-
-    echo -e "\e[0;32m"
+    printf "\e[0;32m"
     clear
-
-    if [[ -t 0 ]]; then
+    if [ -t 0 ]; then
         stty -echo -icanon -icrnl time 0 min 0;
+        tput civis # hide cursor
     fi
-
     keypress=''
-    while [ "x$keypress" = "x" ]; do
-        echo $lines $cols $(( $RANDOM % $cols)) $(( $RANDOM % letters_len ))
+    while [ -z "$keypress" ]; do
+        rc=$(calc_remainder "$cols")
+        rl=$(calc_remainder "$letters_len")
+        echo "$lines $cols $rc $rl"
         sleep 0.04
-        keypress="`cat -v`"
-    done | awk -v letters="$letters" -v cent_v="$cent_v" -v cent_h="$cent_h" -v message="$message" -v message_int="$message_int" "$awkscript"
-
-    if [[ -t 0 ]]; then
+        keypress="$(cat -v)"
+    done | awk \
+        -v message="$message" -v message_int="$message_int" \
+        -v cent_h="$cent_h" -v cent_v="$cent_v" \
+        -v letters="$letters" "$awkscript"
+    if [ -t 0 ]; then
         stty sane;
+        tput cnorm # restore cursor
     fi
-
     clear
-    exit 0
 }
 
 get_opt "$@"
