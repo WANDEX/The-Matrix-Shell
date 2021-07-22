@@ -5,10 +5,10 @@ BINARY_G='01'
 DIGITS_G='0123456789'
 LOWER_G='abcdefghijklmnopqrstuvwxyz'
 UPPER_G='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-rs="\\\\" # written this way to fix 'shellcheck SC1003'
-SPECIAL_G='()[]{}/'"$rs"
 KATAKANA_H_G='ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ'
 KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ'
+# shellcheck disable=SC1003 # because we literally need \\
+SPECIAL_G='()[]{}/\\'
 
 # read into variable using 'Here Document' code block
 # -d introduces 'SC3045', but other approaches to write USAGE - are pretty ugly.
