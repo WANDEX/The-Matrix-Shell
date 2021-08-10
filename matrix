@@ -10,9 +10,7 @@ KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハ
 # shellcheck disable=SC1003 # because we literally need \\
 SPECIAL_G='()[]{}/\\'
 
-# read into variable using 'Here Document' code block
-# -d introduces 'SC3045', but other approaches to write USAGE - are pretty ugly.
-read -r -d '' USAGE <<- EOF
+USAGE=$(printf "%s" "\
 Usage: $(basename "$0") [OPTION...]
 OPTIONS
     -h, --help          Display help
@@ -34,7 +32,7 @@ EXAMPLES
     $(basename "$0") -du
     $(basename "$0") -bi 5 -m 'TEST MESSAGE'
     $(basename "$0") -b --custom='!?/\\\' --testing
-EOF
+")
 
 input_validation() {
     # show usage if option not supplied
