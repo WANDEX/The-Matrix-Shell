@@ -1,11 +1,11 @@
 # The-Matrix-Shell
-The Matrix (1999) screen rain effect of falling green characters in a shell/terminal written with sh/bash/awk.
+The Matrix (1999) screen rain effect of falling green characters in a shell/terminal written in POSIX sh.
 <p align="center">
     <img src="https://raw.githubusercontent.com/WANDEX/The-Matrix-Shell/media/media/demo_1.gif"/>
 </p>
 
 ## Usage
-```bash
+```sh
 Usage: matrix [OPTION...]
 OPTIONS
     -h, --help          Display help
@@ -30,7 +30,7 @@ EXAMPLES
 ```
 
 ## Spawn full screen terminal and execute matrix shell
-```bash
+```sh
 # example for st terminal emulator
 st -f "NotoSansMono Nerd Font:pixelsize=27" -n opaque -t The-Matrix-Shell -e matrix -du
 
