@@ -10,8 +10,9 @@ KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハ
 # shellcheck disable=SC1003 # because we literally need \\
 SPECIAL_G='()[]{}/\\'
 
+bname=$(basename "$0")
 USAGE=$(printf "%s" "\
-Usage: $(basename "$0") [OPTION...]
+Usage: $bname [OPTION...]
 OPTIONS
     -h, --help          Display help
     -b, --binary        Use binary characters  [$BINARY_G]
@@ -29,9 +30,9 @@ OPTIONS
                         Will not work with fixed-width terminals!
 [$KATAKANA_F_G]
 EXAMPLES
-    $(basename "$0") -du
-    $(basename "$0") -bi 5 -m 'TEST MESSAGE'
-    $(basename "$0") -b --custom='!?/\\\' --testing
+    $bname -du
+    $bname -bi 5 -m 'TEST MESSAGE'
+    $bname -b --custom='!?/\\\\' --testing
 ")
 
 input_validation() {
@@ -126,7 +127,7 @@ testing_mode() {
 }
 
 get_chars() {
-    letters="$binary_v$digits_v$lower_v$upper_v$special_v$katakana_f_v$katakana_h_v$custom_v"
+    letters="${binary_v}${digits_v}${lower_v}${upper_v}${special_v}${katakana_f_v}${katakana_h_v}${custom_v}"
     letters_len="$((${#letters} + 1))"
     testing_mode
 }
