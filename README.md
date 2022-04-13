@@ -21,7 +21,7 @@ OPTIONS
     -k, --halfwidth     Use half-width characters of Japanese katakana
                         [ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ]
     -K, --fullwidth     Use full-width Japanese katakana characters.
-                        Will not work with fixed-width terminals!
+                        Will not work, provided as a reference!
 [アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ]
 EXAMPLES
     matrix -du
