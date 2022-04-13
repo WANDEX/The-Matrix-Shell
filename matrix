@@ -1,34 +1,34 @@
 #!/bin/sh
 # The Matrix (1999) screen rain effect
 
-BINARY_G='01'
-DIGITS_G='0123456789'
-LOWER_G='abcdefghijklmnopqrstuvwxyz'
-UPPER_G='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-KATAKANA_H_G='ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ'
-KATAKANA_F_G='アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ'
+BINARY='01'
+DIGITS='0123456789'
+LOWER='abcdefghijklmnopqrstuvwxyz'
+UPPER='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+KATAKANA_H='ｱｲｳｴｵｶｷｸｹｺｻｽｾﾀﾁﾃﾄﾅﾆﾇﾈﾊﾋﾌﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦ'
+KATAKANA_F='アイウエオカキクケコサスセタチテトナニヌネハヒフホマミムメモヤユヨラリルレロワヲ'
 # shellcheck disable=SC1003 # because we literally need \\
-SPECIAL_G='()[]{}/\\'
+SPECIAL='()[]{}/\\'
 
 bname=$(basename "$0")
 USAGE=$(printf "%s" "\
 Usage: $bname [OPTION...]
 OPTIONS
     -h, --help          Display help
-    -b, --binary        Use binary characters  [$BINARY_G]
-    -d, --digits        Use digit characters   [$DIGITS_G]
-    -l, --lower         Use lower case letters [$LOWER_G]
-    -u, --upper         Use upper case letters [$UPPER_G]
-    -s, --special       Use special characters [$SPECIAL_G]
+    -b, --binary        Use binary characters  [$BINARY]
+    -d, --digits        Use digit characters   [$DIGITS]
+    -l, --lower         Use lower case letters [$LOWER]
+    -u, --upper         Use upper case letters [$UPPER]
+    -s, --special       Use special characters [$SPECIAL]
     -t, --testing       Activate character testing mode
     -c, --custom        Use custom characters specified 'inside single quotes'
     -m, --message       Provide a message to display in the center
     -i, --message_int   Provide an integer from 0-9 that modifies the message
     -k, --halfwidth     Use half-width characters of Japanese katakana
-                        [$KATAKANA_H_G]
+                        [$KATAKANA_H]
     -K, --fullwidth     Use full-width Japanese katakana characters.
-                        Will not work with fixed-width terminals!
-[$KATAKANA_F_G]
+                        Will not work, provided as a reference!
+[$KATAKANA_F]
 EXAMPLES
     $bname -du
     $bname -bi 5 -m 'TEST MESSAGE'
@@ -64,18 +64,19 @@ get_opt() {
     # PLACE FOR OPTION DEFAULTS
     message='NEO THE MATRIX HAS YOU'
     message_int=0 # int from 0 to 9 including
+    LETTERS=""
     eval set -- "$OPTIONS"
     while true; do
         case "$1" in
         -b|--binary)
-            binary_v="$BINARY_G"
+            LETTERS="${LETTERS}${BINARY}"
             ;;
         -c|--custom)
             shift
-            custom_v=$1
+            LETTERS="${LETTERS}${1}"
             ;;
         -d|--digits)
-            digits_v="$DIGITS_G"
+            LETTERS="${LETTERS}${DIGITS}"
             ;;
         -h|--help)
             echo "$USAGE"
@@ -86,29 +87,35 @@ get_opt() {
             message_int="$1"
             ;;
         -k|--halfwidth)
-            katakana_h_v="$KATAKANA_H_G"
+            LETTERS="${LETTERS}${KATAKANA_H}"
             ;;
         -K|--fullwidth)
-            katakana_f_v="$KATAKANA_F_G"
+            LETTERS="${LETTERS}${KATAKANA_F}"
             ;;
         -l|--lower)
-            lower_v="$LOWER_G"
+            LETTERS="${LETTERS}${LOWER}"
             ;;
         -m|--message)
             shift
             message="$1"
             ;;
         -s|--special)
-            special_v="$SPECIAL_G"
+            LETTERS="${LETTERS}${SPECIAL}"
             ;;
         -t|--testing)
-            testing_f=1
+            testing=1
             ;;
         -u|--upper)
-            upper_v="$UPPER_G"
+            LETTERS="${LETTERS}${UPPER}"
             ;;
         --)
             shift
+            # NOTE: here in case --testing is not the last option
+            if [ "$testing" ]; then
+                printf "characters:\t[%s]\n" "$LETTERS"
+                printf "length + 1:\t(%s)\n" "$((${#LETTERS} + 1))"
+                exit 0
+            fi
             break
             ;;
         esac
@@ -116,27 +123,9 @@ get_opt() {
     done
 }
 
-testing_mode() {
-    if [ "$testing_f" ]; then
-        printf "Character Testing Mode.\n\n"
-        printf "characters:\t[%s]\n" "$letters"
-        printf "charlength:\t(%s) = characters length + 1\n" "$letters_len"
-        printf "exiting...\n"
-        exit 0
-    fi
-}
-
-get_chars() {
-    letters="${binary_v}${digits_v}${lower_v}${upper_v}${special_v}${katakana_f_v}${katakana_h_v}${custom_v}"
-    letters_len="$((${#letters} + 1))"
-    testing_mode
-}
-
-calc_remainder() {
-    num="$1"
-    rnum=$(shuf -n 1 -i 1-"$cols")
-    out=$(echo "$rnum % $num" | bc)
-    echo "$out"
+remainder() {
+    rnum=$(shuf -n 1 -i "1-$cols")
+    echo $((rnum%$1))
 }
 
 main() {
@@ -151,7 +140,7 @@ main() {
         lines=$1;
         random_col=$3;
         c=$4;
-        letter=substr(letters,c,1);
+        letter=substr(LETTERS,c,1);
         cols[random_col]=0;
         for (col in cols) {
             rnum = int(30*rand());
@@ -192,16 +181,17 @@ main() {
         tput civis # hide cursor
     fi
     keypress=''
+    llen="$((${#LETTERS} + 1))"
     while [ -z "$keypress" ]; do
-        rc=$(calc_remainder "$cols")
-        rl=$(calc_remainder "$letters_len")
+        rc=$(remainder "$cols")
+        rl=$(remainder "$llen")
         echo "$lines $cols $rc $rl"
         sleep 0.04
         keypress="$(cat -v)"
     done | awk \
         -v message="$message" -v message_int="$message_int" \
         -v cent_h="$cent_h" -v cent_v="$cent_v" \
-        -v letters="$letters" "$awkscript"
+        -v LETTERS="$LETTERS" "$awkscript"
     if [ -t 0 ]; then
         stty sane;
         tput cnorm # restore cursor
@@ -210,5 +200,4 @@ main() {
 }
 
 get_opt "$@"
-get_chars
 main
