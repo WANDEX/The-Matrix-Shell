@@ -1,7 +1,7 @@
 # The-Matrix-Shell
 The Matrix (1999) screen rain effect of falling green characters in a shell/terminal written in POSIX sh.
 <p align="center">
-    <img src="https://raw.githubusercontent.com/WANDEX/The-Matrix-Shell/media/media/demo_1.gif"/>
+    <img src="https://user-images.githubusercontent.com/15724752/181203605-18912e4a-5657-4e61-a830-7d8fe5b85f2e.gif"/>
 </p>
 
 ## Usage
