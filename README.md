@@ -13,7 +13,7 @@ OPTIONS
     -d, --digits        Use digit characters   [0123456789]
     -l, --lower         Use lower case letters [abcdefghijklmnopqrstuvwxyz]
     -u, --upper         Use upper case letters [ABCDEFGHIJKLMNOPQRSTUVWXYZ]
-    -s, --special       Use special characters [()[]{}/\\]
+    -s, --special       Use special characters [()[]{}/\]
     -t, --testing       Activate character testing mode
     -c, --custom        Use custom characters specified 'inside single quotes'
     -m, --message       Provide a message to display in the center
@@ -26,7 +26,7 @@ OPTIONS
 EXAMPLES
     matrix -du
     matrix -bi 5 -m 'TEST MESSAGE'
-    matrix -b --custom='!?/\\' --testing
+    matrix -b --custom='!?/\' --testing
 ```
 
 ## Spawn full screen terminal and execute matrix shell
@@ -51,7 +51,7 @@ You can build & patch it from sources yourself, or build & use my already [patch
 # executes matrix shell in new spawned terminals for each monitor output
 # then kills all process-group when 'slock "$bname"' process is finished
 
-bname="$(basename "$0")" # get this script base name
+bname=$(basename "$0") # get this script base name
 
 spawn_term() {
     # add (.0) in title - wm should use this substring as rule to match monitor output
@@ -67,7 +67,7 @@ nummons=$(xrandr --listactivemonitors | sed "1d" | wc -l)
 i=0
 while [ "$i" -lt "$nummons" ]; do
     spawn_term "$i" &
-    i="$(echo "$i+1" | bc)"
+    i=$((i + 1))
 done
 ```
 #### Do not forget to add to your WM - match substring rules:
