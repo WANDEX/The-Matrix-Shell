@@ -79,7 +79,7 @@ where `N` is number from `0` to the `total Number of monitor outputs`.
 
 To place windows with such titles on predefined monitors.
 
-## After building and installing of patched slock & creating matrixlock they all could be used together.
+## After installing of patched slock & creating matrixlock:
 Make sure that **slock, matrix, matrixlock** files are added to your `$PATH`. And can be used independently.
 
 ##### Now you can lock your screen using this simple command:
